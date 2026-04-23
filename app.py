@@ -1,0 +1,78 @@
+import streamlit as st
+from train import entrenar
+from test import cargar_modelos, predecir
+
+# ── Configuración de página ────────────────────────────────────────────────────
+st.set_page_config(page_title="Fatiga en Ciclismo · KNN vs Regresión", layout="centered")
+ 
+st.title("🚴 Predicción de Fatiga en Ciclismo")
+st.caption("Pipeline ML: StandardScaler → KNeighborsRegressor / LinearRegression")
+ 
+# ── Parámetros del pipeline (sidebar) ─────────────────────────────────────────
+st.sidebar.header("⚙️ Parámetros del Pipeline")
+porcentaje_test = st.sidebar.slider(
+    "Porcentaje de Test",
+    min_value=0.10, max_value=0.50, value=0.20, step=0.05,
+    format="%.2f",
+)
+k = st.sidebar.slider(
+    "Número de Vecinos (k)",
+    min_value=3, max_value=100, value=5, step=1,
+)
+ 
+# ── Entrenar (train.py) ───────────────────────────────────────────────────────
+@st.cache_resource
+def obtener_modelos(porcentaje_test, k):
+    """Delega el entrenamiento a train.py y retorna pipelines + métricas."""
+    return entrenar(porcentaje_test=porcentaje_test, k=k)
+ 
+pipeline_knn, pipeline_regresion, metricas_knn, metricas_regresion = \
+    obtener_modelos(porcentaje_test, k)
+ 
+# ── Métricas ──────────────────────────────────────────────────────────────────
+st.subheader("📊 Métricas de Evaluación")
+ 
+col1, col2 = st.columns(2)
+with col1:
+    st.markdown("**KNN**")
+    st.metric("MSE", metricas_knn["MSE"])
+    st.metric("R²",  metricas_knn["R²"])
+with col2:
+    st.markdown("**Regresión Lineal**")
+    st.metric("MSE", metricas_regresion["MSE"])
+    st.metric("R²",  metricas_regresion["R²"])
+ 
+st.divider()
+ 
+# ── Formulario de predicción (test.py) ────────────────────────────────────────
+st.subheader("🔮 Predicción de Fatiga")
+ 
+col_a, col_b = st.columns(2)
+with col_a:
+    frecuencia_cardiaca = st.number_input("Frecuencia cardíaca (bpm)", min_value=0.0, step=1.0)
+    potencia            = st.number_input("Potencia (W)",               min_value=0.0, step=1.0)
+    cadencia            = st.number_input("Cadencia (rpm)",             min_value=0.0, step=1.0)
+    tiempo              = st.number_input("Tiempo (min)",               min_value=0.0, step=0.1)
+with col_b:
+    temperatura = st.number_input("Temperatura (°C)", min_value=0.0, step=0.1)
+    pendiente   = st.number_input("Pendiente (%)",                   step=0.1)
+    velocidad   = st.number_input("Velocidad (km/h)", min_value=0.0, step=0.1)
+ 
+if st.button("Predecir Fatiga", type="primary"):
+    # Delega la predicción a test.py
+    pred_knn, pred_reg = predecir(
+        pipeline_knn, pipeline_regresion,
+        frecuencia_cardiaca, potencia, cadencia,
+        tiempo, temperatura, pendiente, velocidad,
+    )
+    res1, res2 = st.columns(2)
+    with res1:
+        st.success(f"**KNN**: {pred_knn}")
+    with res2:
+        st.info(f"**Regresión Lineal**: {pred_reg}")
+ 
+st.divider()
+st.caption(
+    "Los modelos se guardan en `modelo_knn.pkl` y `modelo_regresion.pkl`. "
+    "También puedes usar `test.py` para predicciones directamente por consola."
+)
