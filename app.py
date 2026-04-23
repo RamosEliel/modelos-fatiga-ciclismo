@@ -2,6 +2,7 @@ import streamlit as st
 from train import entrenar
 from test import cargar_modelos, predecir
 import joblib
+import os
 
 # ── Configuración de página ────────────────────────────────────────────────────
 st.set_page_config(page_title="Fatiga en Ciclismo · KNN vs Regresión", layout="centered")
@@ -19,8 +20,10 @@ st.subheader("Métricas de Evaluación")
  
 col1, col2 = st.columns(2)
 
-metricas_knn = joblib.load("python-scripts/production_model/metricas_knn.pkl")
-metricas_regresion = joblib.load("python-scripts/production_model/metricas_regresion.pkl")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+metricas_knn = joblib.load(os.path.join(BASE_DIR, "metricas_knn.pkl"))
+metricas_regresion = joblib.load(os.path.join(BASE_DIR, "metricas_regresion.pkl"))
 
 with col1:
     st.markdown("**KNN**")
