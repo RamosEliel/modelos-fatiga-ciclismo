@@ -11,7 +11,7 @@ st.set_page_config(page_title="Fatiga en Ciclismo · KNN vs Regresión", layout=
  
 st.title("Predicción de Fatiga en Ciclismo")
 
-@st.cache_resource
+#@st.cache_resource
 def cargar():
     st.write("Entrando a cargar_modelos()")
     modelos = cargar_modelos()
