@@ -13,15 +13,11 @@ st.title("Predicción de Fatiga en Ciclismo")
 
 #@st.cache_resource
 def cargar():
-    st.write("Entrando a cargar_modelos()")
     modelos = cargar_modelos()
-    st.write("Modelos cargados")
     return modelos
 
 try:
-    st.write("Antes de cargar modelos")
     pipeline_knn, pipeline_regresion = cargar()
-    st.write("Después de cargar modelos")
 except Exception as e:
     st.error(f"Error cargando modelos: {e}")
     st.stop()
