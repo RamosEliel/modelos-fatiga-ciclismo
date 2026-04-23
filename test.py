@@ -1,8 +1,8 @@
 import pandas as pd
 import joblib
 
-KNN_PATH = "modelo_knn.pkl"
-REGRESION_PATH = "modelo_regresion.pkl"
+KNN_PATH = "python-scripts/production_model/modelo_knn.pkl"
+REGRESION_PATH = "python-scripts/production_model/modelo_regresion.pkl"
 
 def cargar_modelos():
     try:
