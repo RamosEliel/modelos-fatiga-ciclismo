@@ -1,13 +1,16 @@
 import pandas as pd
 import joblib
+import os
 
 KNN_PATH = "modelo_knn.pkl"
 REGRESION_PATH = "modelo_regresion.pkl"
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def cargar_modelos():
     try:
-        pipeline_knn = joblib.load(KNN_PATH)
-        pipeline_regresion = joblib.load(REGRESION_PATH)
+        pipeline_knn = joblib.load(os.path.join(BASE_DIR, KNN_PATH))
+        pipeline_regresion = joblib.load(os.path.join(BASE_DIR, REGRESION_PATH))
         print("Modelos cargados correctamente.")
         return pipeline_knn, pipeline_regresion
     except Exception as e:

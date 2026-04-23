@@ -6,10 +6,14 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.linear_model import LinearRegression
+import os
 
 
 KNN_PATH       = "modelo_knn.pkl"
 REGRESION_PATH = "modelo_regresion.pkl"
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 def entrenar(porcentaje_test=0.2, k=5):
 
@@ -52,9 +56,9 @@ def entrenar(porcentaje_test=0.2, k=5):
 
     joblib.dump(metricas_regresion, "metricas_regresion.pkl")
 
-    joblib.dump(pipeline_knn, KNN_PATH)
-    joblib.dump(pipeline_regresion, REGRESION_PATH)
-    
+    joblib.dump(pipeline_knn, os.path.join(BASE_DIR, KNN_PATH))
+    joblib.dump(pipeline_regresion, os.path.join(BASE_DIR, REGRESION_PATH))
+
     return pipeline_knn, pipeline_regresion,metricas_knn, metricas_regresion
 
 
