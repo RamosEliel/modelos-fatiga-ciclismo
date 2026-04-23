@@ -10,9 +10,8 @@ def cargar_modelos():
         pipeline_regresion = joblib.load(REGRESION_PATH)
         print("Modelos cargados correctamente.")
         return pipeline_knn, pipeline_regresion
-    except:
-        print("Error: primero debes ejecutar train.py")
-        exit()
+    except Exception as e:
+        raise Exception(f"No se pudieron cargar los modelos: {e}")
 
 
 def predecir(pipeline_knn, pipeline_regresion, frecuencia_cardiaca, potencia, cadencia, tiempo, temperatura, pendiente, velocidad):

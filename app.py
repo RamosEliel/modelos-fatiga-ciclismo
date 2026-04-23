@@ -4,6 +4,11 @@ from test import cargar_modelos, predecir
 import joblib
 import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+st.write("📁 Ruta base:", BASE_DIR)
+st.write("📂 Archivos disponibles:", os.listdir(BASE_DIR))
+
 # ── Configuración de página ────────────────────────────────────────────────────
 st.set_page_config(page_title="Fatiga en Ciclismo · KNN vs Regresión", layout="centered")
  
@@ -13,17 +18,23 @@ st.title("Predicción de Fatiga en Ciclismo")
 def cargar():
     return cargar_modelos()
 
-pipeline_knn, pipeline_regresion = cargar()
+try:
+    pipeline_knn, pipeline_regresion = cargar()
+except Exception as e:
+    st.error(f"❌ Error cargando modelos: {e}")
+    st.stop()
  
 # ── Métricas ──────────────────────────────────────────────────────────────────
 st.subheader("Métricas de Evaluación")
  
 col1, col2 = st.columns(2)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-metricas_knn = joblib.load(os.path.join(BASE_DIR, "metricas_knn.pkl"))
-metricas_regresion = joblib.load(os.path.join(BASE_DIR, "metricas_regresion.pkl"))
+try:
+    metricas_knn = joblib.load(os.path.join(BASE_DIR, "metricas_knn.pkl"))
+    metricas_regresion = joblib.load(os.path.join(BASE_DIR, "metricas_regresion.pkl"))
+except Exception as e:
+    st.error(f"❌ Error cargando métricas: {e}")
+    st.stop()
 
 with col1:
     st.markdown("**KNN**")
